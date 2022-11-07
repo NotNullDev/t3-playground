@@ -3,7 +3,7 @@ import { prisma } from "../../db/client";
 import { publicProcedure, router } from "../trpc";
 
 export const todoRouter = router({
-  add: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
+  add: publicProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
     await prisma.todo.create({
       data: {
         content: input,
@@ -16,7 +16,7 @@ export const todoRouter = router({
     const all = await prisma.todo.findMany();
     return all;
   }),
-  removeTodo: publicProcedure.input(z.string()).query(async ({ input }) => {
+  removeTodo: publicProcedure.input(z.string()).mutation(async ({ input }) => {
     const foundTodo = await prisma.todo.delete({
       where: {
         id: input,
@@ -31,7 +31,7 @@ export const todoRouter = router({
         newStatus: z.string(),
       })
     )
-    .query(async ({ input: { id, newStatus } }) => {
+    .mutation(async ({ input: { id, newStatus } }) => {
       const updated = await prisma.todo.update({
         where: {
           id,
